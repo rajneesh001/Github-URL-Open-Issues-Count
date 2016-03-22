@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+  <html>
+  
+  <!-- Google hosted Angular JS libraries for reference-->  
+     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script> 
+ <body>
+  
+  <p>Enter url of your github repository.</p>
+  
+  <div ng-app="myApp" ng-controller="myCtrl">
+  URL <input style = "width:350px" type="text" ng-model="url" placeholder = "Enter the URL"> <button ng-click="showResult()">CLICK ME</button><br><br>
+  <p ng-show="loading">...LOADING...</p>
+  <h3>{{errorMessage}}</h3>
+
+    <!--Table creation to store the Count of issues-->
+    
+  <table border="1">
+    	<tr>
+    		<th>
+    			Total issues
+    		</th>
+    		<th>
+    			Last 24 hours
+    		</th>
+   		<th>
+    			1-7 days
+    		</th>
+    		<th>
+    			More than 7 days
+    		</th>
+    	</tr>
+  	<td>
+  	{{count1}}
+  	</td>
+  	<td>
+  	{{count2}}
+  	</td>
+  	<td>
+  	{{count3}}
+  	</td>
+  	<td>
+  	{{count4}}
+  	</td>
+  </table>
+  </div>
+  
+  <script>
+  var app = angular.module('myApp', []);
+  app.controller('myCtrl', function($scope, $http) {
+      $scope.showResult = function() {
+  	    $scope.loading = true;
+
+  		                                           <!--Fetching repo name from url--> 
+
+          link = $scope.url;
+          res = link.split("github.com/");
+  		flag = true;
+  		console.log(res.length);
+  		if(res.length >= 2) {
+  			res = res[1].split("/");
+  			if(res.length >= 2) {
+  				apiUrl = "https://api.github.com/repos/"+res[0]+"/"+res[1]+"/issues";
+  			} else {
+  				flag = false;
+  			}
+  		} else {
+  			flag = false;
+  		}
+ 
+  		                                                            <!--Checking validity of apiUrl-->
+
+  		if(flag) {
+
+  		                                                     <!--Making a GET request to the api endpoint-->
+  			$http({
+  				method : "GET",
+  				url :  apiUrl
+  			}).then(function mySucces(response) {        <!--If Api return success then this function is called-->
+  				as = response.data;
+  				$count1 = 0;
+  				$count2 = 0;
+  				$count3 = 0;
+  				$count4 = 0;
+  				$appendTd = "";
+  				for(var i=0;i<as.length;i++){
+  					if(as[i].state == "open"){        <!--Condition to check only for open issues-->
+  					$count1++;
+  						var today = new Date();
+  						var creationDate = new Date(as[i].created_at);
+  						if(Math.abs(today.getTime()-creationDate.getTime())/(1000 * 3600 ) <= 24){  <!--Get open issues that were opened in the last 24 hours, getTime() gives time in milliseconds.-->
+ 							$count2++;
+  						}
+
+                 <!--Get open issues that were opened more than 24 hours ago but less than 7 days ago, 168 is the total no. of hours in a week.--> 
+
+  						else if(Math.abs(today.getTime()-creationDate.getTime())/(1000 * 3600 ) > 24 && Math.abs(today.getTime()-creationDate.getTime())/(1000 * 3600 ) <= 168 ){
+  							$count3++;
+  						} else {
+  						    //Get open issues that were opened more than 7 days ago
+  							$count4++;
+  						}
+  					}
+  				}
+  				$scope.count1 = $count1;
+  				$scope.count2 = $count2;
+  				$scope.count3 = $count3;
+  				$scope.count4 = $count4;
+  				$scope.errorMessage = "";
+  				$scope.loading = false;
+  			},function myError(response) {                    <!--If Api return success then this function is called-->
+  				$scope.errorMessage = "Invalid Url";
+  				$scope.loading = false;
+  			});
+  		} else {                                               <!--If url is invalid-->
+  			$scope.errorMessage = "Invalid Url";
+  			$scope.loading = false;
+  		}
+      };
+  });
+  </script>
+  </body>
+ </html>
