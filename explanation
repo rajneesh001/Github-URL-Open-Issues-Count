@@ -1,0 +1,31 @@
+
+ <!-- Working Procedures or explanation of an application.-->
+ 
+ This is being an Angular Js based application which allow an user to input the link of an repository and in response provide an user
+ with-
+ 
+ 1. Total number of an Open Issues.
+ 2. Number of open issues that were opened in the last 24 hours.
+ 3. Number of open issues that were opened more than 24 hours ago but less than 7 days ago
+ 4. Number of open issues that were opened more than 7 days ago 
+ 
+   In this the Application UI publish the respective count of an issues of an repository.
+   
+   In this firstly the User is allowed to input the link of an repository he want to get an list of an issues.
+   
+  1.  Firstly we would store an URL being given input by the user and trying to fetch out the repository name from the URL.
+  2.  After the repository name extraction we were trying to create an link known as apiURL which is being the link of an issues of 
+      that respective repository.
+  3.  If the link is created successfully we make a Get request to an API endpoint and if the response is successfull then a function 
+      is being called to count the number of issues accordingly to question asked.
+  4.  Inorder to figure out the time interval of an issues we take an account of an predefined function named gettime() and manipulate 
+      it accordingly to figure accordingly to get them falling in the respective time interval.
+  5.  We would count the number of issues falling in an repective time period and print accordingly in an table.
+  
+  
+  <!-- Improving Code -->
+  
+  It might be possible to have an more sophisticated or an improved solution.
+  As per to my finding and approach I figured out and came up with e solution. If given more time I would try to figure out more
+  improved ,sophisticated, short  solution whch may be might be in any other languages as well.
+       
